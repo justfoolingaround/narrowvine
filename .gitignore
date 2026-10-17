@@ -1,0 +1,19 @@
+# Rust
+/narrowvine-core/target/
+
+# Python
+/.venv/
+/.pytest_cache/
+/.mypy_cache/
+**/__pycache__/
+*.py[cod]
+
+# Native/shared objects: built extension, cargo artifacts, supplied CDM
+*.so
+*.so.*
+*.dylib
+*.dll
+*.pyd
+
+# Build outputs
+/dist/

@@ -1,0 +1,60 @@
+[project]
+name = "narrowvine"
+version = "0.1.0"
+description = "Friendly Python host layer for Google's Widevine CDM (libwidevinecdm.so)"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+license = { text = "MIT" }
+dependencies = [
+    "requests>=2.31",
+    "protobuf>=5.26",
+    "pycryptodomex>=3.20",
+    "regex>=2024.5.15",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "mypy>=1.11",
+]
+
+# `uv run --group codegen python scripts/gen_proto.py` regenerates the
+# license protocol bindings. grpcio-tools bundles protoc.
+codegen = [
+    "grpcio-tools>=1.62",
+]
+
+[build-system]
+requires = ["maturin>=1.9,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+# Rust crate in narrowvine-core/, Python package in narrowvine/.
+manifest-path = "narrowvine-core/Cargo.toml"
+python-source = "."
+module-name = "narrowvine._native"
+bindings = "pyo3"
+features = ["python"]
+strip = true
+
+# Rebuild the extension when the Rust crate changes (uv builds via maturin).
+[tool.uv]
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "narrowvine-core/Cargo.toml" },
+    { file = "narrowvine-core/src/**/*.rs" },
+    { file = "narrowvine/**/*.py" },
+]
+
+[tool.mypy]
+python_version = "3.13"
+files = ["narrowvine"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "network: test needs internet access (Bitmovin CDN, license proxy)",
+    "ffmpeg: test uses the system ffmpeg binary",
+]

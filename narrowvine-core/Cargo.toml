@@ -1,0 +1,18 @@
+[package]
+name = "narrowvine-core"
+version = "0.1.0"
+edition = "2021"
+description = "Rust host layer + PyO3 bindings for the Widevine CDM (CDM interface 10)"
+license = "MIT"
+
+[lib]
+name = "narrowvine_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+libloading = "0.8"
+pyo3 = { version = "0.29", features = ["extension-module"], optional = true }
+
+[features]
+default = ["python"]
+python = ["dep:pyo3"]
